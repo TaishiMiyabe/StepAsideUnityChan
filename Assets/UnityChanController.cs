@@ -105,10 +105,12 @@ public class UnityChanController : MonoBehaviour
         {
             this.myAnimator.SetBool("Jump", true);
 
+            //定数velocityYを入れつづけることで、上昇。
             inputVelocityY = this.velocityY;
         }
         else
         {
+            //現在のY座標の速度を代入する。Gがあるため、だんだん落ちていく。
             inputVelocityY = this.myRigidbody.velocity.y;
         }
 
