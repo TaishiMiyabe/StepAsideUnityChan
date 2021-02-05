@@ -5,15 +5,14 @@ using UnityEngine;
 public class ItemGenerator : MonoBehaviour
 {
     public GameObject carPrefab;
-    //GameObject car = Instantiate(carPrefab);
+ 
 
     public GameObject coinPrefab;
-    //GameObject coin = Instantiate(coinPrefab);
+
 
     public GameObject conePrefab;
-    //GameObject cone = Instantiate(conePrefab);
+ 
 
-    //public GameObject UnityChan;
 
     //課題
     private Renderer targetRenderer;
@@ -33,7 +32,6 @@ public class ItemGenerator : MonoBehaviour
     void Start()
     {
         //課題
-        this.targetRenderer = GetComponent<Renderer>();
 
         Vector3 UnityPos = GameObject.Find("unitychan").transform.position;
 
@@ -49,12 +47,7 @@ public class ItemGenerator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //課題
-        if (!targetRenderer.isVisible)
-        {
-            Destroy(this.gameObject);
-            Debug.Log("aaa");
-        }
+
         Vector3 UnityPos = GameObject.Find("unitychan").transform.position;
 
         
@@ -62,10 +55,16 @@ public class ItemGenerator : MonoBehaviour
         {
             z += zRange;
             startPos += zRange;
+
             for (int i = startPos; i < z; i += 15)//Unityちゃんが進むごとにアイテム生成されたけど、なんか変な作り方してる気がする。
             {
-                this.ItemGenerate(i);
+                //zがゴールラインを越えたら生成しない。
+                if (z < goalPos)
+                {
+                    this.ItemGenerate(i);
+                }
             }
+            
         }
     }
 
