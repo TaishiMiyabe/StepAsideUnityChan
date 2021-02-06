@@ -21,12 +21,15 @@ public class UnityChanController : MonoBehaviour
     private float movableRange = 3.4f;
 
     //動きを減速させる係数
-    private float coefficient = 0.99f;
+    private float coefficient = 0.97f;
 
     private float TextCoefficient = 0.01f;
 
     //ゲーム終了判定
     private bool isEnd = false;
+
+    //ゲームオーバー判定
+    private bool isGameOver = false;
 
     //ゲーム終了時に表示するテキスト
     private GameObject stateText;
@@ -82,18 +85,23 @@ public class UnityChanController : MonoBehaviour
             this.velocityX *= this.coefficient;
             this.velocityY *= this.coefficient;
             this.velocityZ *= this.coefficient;
-            this.myAnimator.speed *= this.coefficient;
 
-            //テキストを徐々に表示...テキストが出てくるタイミングが遅い。。。
+            if (this.isGameOver)
+            {
+                this.myAnimator.speed *= this.coefficient;
+            }
+            
+
+            //テキストを徐々に表示
             this.a_color += this.TextCoefficient;
             this.stateText.GetComponent<Text>().color = new Color(1, 1, 1, a_color);
         }
-        else
+        else if(a_color >= 0)
         {
-           //スタート直後、"GAME START"の文字をだんだん薄くする。
+            //スタート直後、"GAME START"の文字をだんだん薄くする。
                 this.a_color -= this.TextCoefficient;
                 this.stateText.GetComponent<Text>().color = new Color(1, 1, 1, a_color);
-            
+           
         }
 
 
@@ -130,6 +138,11 @@ public class UnityChanController : MonoBehaviour
         }
 
         this.myRigidbody.velocity = new Vector3(inputVelocityX, inputVelocityY, this.velocityZ);
+
+        //if(this.velocityZ < 0.1f)
+        //{
+        //    this.myAnimator.SetFloat("Speed", 0);
+        //}
     }
 
 
@@ -140,6 +153,7 @@ public class UnityChanController : MonoBehaviour
         if(other.gameObject.tag == "CarTag" || other.gameObject.tag == "TrafficConeTag")
         {
             this.isEnd = true;
+            this.isGameOver = true;
             this.stateText.GetComponent<Text>().text = "GAME OVER";
            
         }
@@ -148,6 +162,8 @@ public class UnityChanController : MonoBehaviour
         {
             this.isEnd = true;
             this.stateText.GetComponent<Text>().text = "CLEAR!!";
+
+            this.myAnimator.SetBool("isGoal", true);
         }
 
         if(other.gameObject.tag == "CoinTag")
