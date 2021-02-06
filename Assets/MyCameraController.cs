@@ -16,15 +16,18 @@ public class MyCameraController : MonoBehaviour
     //ゴールポジション
     private float goalPos = 370f;
 
+    //ゴールの可否
+    private bool isGoal = false;
+
     //ゴールしたらユニティちゃんにカメラが少し近づく。
-    private float approach = 5f;
+    private float approach = 0.1f;
+
+    private float y_approach = 3f;
 
     // Start is called before the first frame update
     void Start()
     {
         this.unitychan = GameObject.Find("unitychan");
-
-        //this.uniRigidbody = unitychan.GetComponent<Rigidbody>();
 
         this.difference = unitychan.transform.position.z - this.transform.position.z;
     }
@@ -32,16 +35,25 @@ public class MyCameraController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        this.transform.position = new Vector3(0, this.transform.position.y, this.unitychan.transform.position.z - difference);
-
-        if(this.unitychan.transform.position.z >= goalPos )
+        if (!isGoal)
         {
-            rotateSpeed = 0.5f;
+            this.transform.position = new Vector3(0, this.transform.position.y, this.unitychan.transform.position.z - difference);
+        }
+        else
+        {
+            rotateSpeed = 0.3f;
 
-            this.difference = approach;
-
+            this.transform.RotateAround(unitychan.transform.position, Vector3.up, rotateSpeed);
         }
 
-        this.transform.RotateAround(unitychan.transform.position, Vector3.up, rotateSpeed);
+        if(this.unitychan.transform.position.z >= goalPos && (!isGoal))
+        {
+            //ゴールラインをユニティちゃんが超えたら、isGoalをtrueに。
+            isGoal = true;
+
+            this.difference = approach;
+            this.transform.position = new Vector3(0, this.transform.position.y - y_approach, this.unitychan.transform.position.z - difference);
+        }
+
     }
 }
